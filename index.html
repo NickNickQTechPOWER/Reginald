@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reginald</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <style>
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream: #f5f2e3;
+      --cream-dark: #e8e1d4;
+      --ink: #251400;
+      --ink-light: #5c564d;
+      --ink-faint: #8a847a;
+      --warm: #c4a882;
+      --warm-dark: #a08564;
+      --rust: #b85c38;
+      --sage: #6b7c5e;
+      --slate: #4a5568;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 3rem;
+      background: rgba(245, 242, 227, 0.85);
+      backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 72px;
+    }
+    .logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem; letter-spacing: 0.02em;
+      text-decoration: none; color: var(--ink);
+    }
+    .nav-links { display: flex; align-items: center; gap: 2.5rem; }
+    .nav-links a {
+      color: var(--ink-light); text-decoration: none;
+      font-size: 0.78rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .btn-warm {
+      display: inline-block;
+      background: var(--ink); color: var(--cream);
+      border: none; padding: 12px 28px; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 500; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      transition: opacity 0.2s;
+    }
+    .btn-warm:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; padding: 140px 2rem 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 80%, rgba(184, 92, 56, 0.12), transparent 70%),
+        radial-gradient(ellipse 60% 50% at 30% 50%, rgba(107, 124, 94, 0.08), transparent 60%),
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(196, 168, 130, 0.1), transparent 60%);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 800px; }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 400; letter-spacing: 0.01em;
+      line-height: 1.1; margin-bottom: 2rem;
+      color: var(--ink);
+      text-transform: uppercase;
+    }
+    .hero p {
+      font-size: 1.1rem; color: var(--ink-light);
+      max-width: 520px; margin: 0 auto 3rem;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(37, 20, 0, 0.08);
+      border: 1px solid rgba(37, 20, 0, 0.15);
+      color: var(--ink);
+      padding: 16px 40px; border-radius: 100px;
+      font-size: 0.82rem; font-weight: 500; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      backdrop-filter: blur(8px);
+      transition: background 0.2s;
+    }
+    .hero-cta:hover { background: rgba(37, 20, 0, 0.12); }
+
+    /* STATEMENT */
+    .statement {
+      padding: 10rem 2rem;
+      text-align: center;
+    }
+    .statement p {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+      max-width: 780px; margin: 0 auto;
+      line-height: 1.45;
+      color: var(--ink-light);
+    }
+    .statement p strong {
+      color: var(--ink);
+      font-weight: 400;
+    }
+
+    /* BENTO GRID */
+    .bento {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 2rem 8rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.25rem;
+    }
+    .bento-card {
+      background: var(--cream-dark);
+      border-radius: 20px;
+      padding: 2.5rem;
+      position: relative; overflow: hidden;
+      min-height: 380px;
+      display: flex; flex-direction: column;
+    }
+    .bento-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.5rem; font-weight: 400;
+      margin-bottom: 0.75rem; line-height: 1.3;
+    }
+    .bento-card > p {
+      font-size: 0.92rem; color: var(--ink-light);
+      line-height: 1.65; max-width: 380px;
+    }
+    .bento-card .visual {
+      flex: 1; display: flex; align-items: flex-end;
+      justify-content: center; margin-top: 2rem;
+    }
+
+    /* TOS SCANNER VISUAL */
+    .tos-visual {
+      width: 100%; max-width: 420px;
+      background: rgba(26, 23, 20, 0.04);
+      border-radius: 14px; padding: 1.5rem;
+    }
+    .tos-header {
+      font-size: 0.7rem; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--ink-faint);
+      margin-bottom: 1rem; font-weight: 500;
+    }
+    .tos-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(26, 23, 20, 0.06);
+    }
+    .tos-row:last-child { border: none; }
+    .tos-tag {
+      font-size: 0.65rem; font-weight: 500;
+      padding: 3px 8px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .tos-tag.high { background: rgba(184, 92, 56, 0.12); color: var(--rust); }
+    .tos-tag.med { background: rgba(196, 168, 130, 0.25); color: var(--warm-dark); }
+    .tos-tag.low { background: rgba(107, 124, 94, 0.12); color: var(--sage); }
+    .tos-text { font-size: 0.82rem; color: var(--ink-light); line-height: 1.45; }
+
+    /* EMAIL VISUAL */
+    .email-visual {
+      width: 100%; max-width: 420px;
+    }
+    .email-mock {
+      background: #fff;
+      border-radius: 14px; overflow: hidden;
+      box-shadow: 0 2px 20px rgba(26, 23, 20, 0.06);
+    }
+    .email-top {
+      padding: 1rem 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(26, 23, 20, 0.06);
+    }
+    .email-sender-info { display: flex; align-items: center; gap: 10px; }
+    .email-av {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--cream-dark);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 500; color: var(--ink-light);
+    }
+    .email-name { font-size: 0.85rem; font-weight: 500; }
+    .email-domain { font-size: 0.72rem; color: var(--ink-faint); }
+    .flagged {
+      font-size: 0.68rem; font-weight: 500;
+      color: var(--rust); text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .email-body-mock {
+      padding: 1.25rem;
+    }
+    .email-subject { font-size: 0.88rem; font-weight: 500; margin-bottom: 0.5rem; }
+    .email-text { font-size: 0.82rem; color: var(--ink-light); line-height: 1.6; }
+    .reginald-note {
+      margin: 0.75rem 1.25rem 1.25rem;
+      background: rgba(107, 124, 94, 0.08);
+      border-radius: 10px; padding: 1rem 1.25rem;
+      border-left: 3px solid var(--sage);
+    }
+    .reginald-note-title {
+      font-size: 0.72rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--sage); margin-bottom: 0.5rem;
+    }
+    .reginald-note ul {
+      list-style: none; padding: 0;
+    }
+    .reginald-note li {
+      font-size: 0.78rem; color: var(--ink-light);
+      padding: 3px 0; line-height: 1.5;
+      padding-left: 14px; position: relative;
+    }
+    .reginald-note li::before {
+      content: ''; position: absolute; left: 0; top: 10px;
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--sage);
+    }
+
+    /* SCRAMBLER VISUAL */
+    .scramble-visual {
+      width: 100%;
+      display: flex; gap: 1rem; align-items: center;
+    }
+    .profile-col {
+      flex: 1;
+      background: rgba(26, 23, 20, 0.04);
+      border-radius: 12px; padding: 1.25rem;
+    }
+    .profile-col h5 {
+      font-size: 0.65rem; text-transform: uppercase;
+      letter-spacing: 0.1em; margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+    .profile-col.before h5 { color: var(--rust); }
+    .profile-col.after h5 { color: var(--sage); }
+    .profile-field {
+      display: flex; justify-content: space-between;
+      font-size: 0.78rem; padding: 5px 0;
+      border-bottom: 1px solid rgba(26, 23, 20, 0.05);
+    }
+    .profile-field:last-child { border: none; }
+    .profile-field .k { color: var(--ink-faint); }
+    .profile-field .v { font-weight: 500; }
+    .profile-field .v.scrambled {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--sage); font-size: 0.75rem;
+    }
+    .arrow-col {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; flex-shrink: 0; padding: 0 0.5rem;
+    }
+    .arrow-col svg { width: 24px; height: 24px; color: var(--ink-faint); }
+
+    /* DATA SHIELD CARD */
+    .bento-card.full-width {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      background: var(--ink);
+      color: var(--cream);
+      min-height: 480px;
+    }
+    .bento-card.full-width h3 { color: var(--cream); }
+    .bento-card.full-width > p { color: rgba(245, 242, 227, 0.6); max-width: none; }
+    .bento-card.full-width .visual {
+      margin-top: 0; align-items: center;
+    }
+    .shield-visual {
+      width: 100%;
+      display: flex; flex-direction: column;
+      gap: 1.25rem;
+    }
+    .browser-threat {
+      background: rgba(245, 242, 227, 0.06);
+      border: 1px solid rgba(245, 242, 227, 0.08);
+      border-radius: 12px; padding: 1.25rem;
+    }
+    .browser-threat-header {
+      font-size: 0.65rem; text-transform: uppercase;
+      letter-spacing: 0.1em; font-weight: 500;
+      color: rgba(245, 242, 227, 0.35);
+      margin-bottom: 1rem;
+    }
+    .browser-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 7px 0;
+      border-bottom: 1px solid rgba(245, 242, 227, 0.05);
+    }
+    .browser-row:last-child { border: none; }
+    .browser-name {
+      font-size: 0.82rem; font-weight: 500;
+      color: rgba(245, 242, 227, 0.85);
+    }
+    .browser-status {
+      font-size: 0.65rem; font-weight: 500;
+      padding: 3px 8px; border-radius: 4px;
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .browser-status.shielded {
+      background: rgba(107, 124, 94, 0.2);
+      color: #8fa97e;
+    }
+    .browser-status.blocked {
+      background: rgba(184, 92, 56, 0.2);
+      color: #d4896a;
+    }
+    .injection-alert {
+      background: rgba(184, 92, 56, 0.1);
+      border: 1px solid rgba(184, 92, 56, 0.2);
+      border-radius: 10px; padding: 1rem 1.25rem;
+    }
+    .injection-alert-title {
+      font-size: 0.68rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: #d4896a; margin-bottom: 0.5rem;
+    }
+    .injection-alert p {
+      font-size: 0.78rem;
+      color: rgba(245, 242, 227, 0.5);
+      line-height: 1.5;
+    }
+    .shield-flow {
+      display: flex; align-items: center; gap: 0.5rem;
+      justify-content: center;
+      padding: 0.75rem 0;
+    }
+    .flow-node {
+      font-size: 0.68rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      padding: 6px 14px; border-radius: 6px;
+    }
+    .flow-node.you-node {
+      background: rgba(107, 124, 94, 0.15);
+      color: #8fa97e;
+    }
+    .flow-node.reg-node {
+      background: rgba(245, 242, 227, 0.1);
+      color: var(--cream);
+      border: 1px solid rgba(245, 242, 227, 0.15);
+    }
+    .flow-node.web-node {
+      background: rgba(184, 92, 56, 0.15);
+      color: #d4896a;
+    }
+    .flow-arrow {
+      color: rgba(245, 242, 227, 0.2);
+      font-size: 0.75rem;
+    }
+
+    /* STATS */
+    .stats-section {
+      padding: 4rem 2rem 8rem;
+    }
+    .stats-header {
+      text-align: center; margin-bottom: 3.5rem;
+    }
+    .stats-header p {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.5rem, 2.8vw, 2.2rem);
+      max-width: 640px; margin: 0 auto;
+      line-height: 1.4;
+    }
+    .stats-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+    }
+    .stat-card {
+      background: var(--cream-dark);
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .stat-card .num {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      line-height: 1; margin-bottom: 0.75rem;
+    }
+    .stat-card .desc {
+      font-size: 0.82rem; color: var(--ink-faint);
+    }
+
+    /* BOTTOM CARDS */
+    .bottom-grid {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 2rem 8rem;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+    }
+    .bottom-card {
+      background: var(--cream-dark);
+      border-radius: 20px; padding: 2.5rem;
+      min-height: 320px;
+      display: flex; flex-direction: column;
+    }
+    .bottom-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem; font-weight: 400;
+      margin-bottom: 0.75rem; line-height: 1.3;
+    }
+    .bottom-card p {
+      font-size: 0.88rem; color: var(--ink-light);
+      line-height: 1.6;
+    }
+    .bottom-card .card-visual {
+      flex: 1; display: flex; align-items: flex-end;
+      justify-content: center; margin-top: 2rem;
+      position: relative;
+    }
+    .bottom-card .card-visual-gradient {
+      width: 100%; height: 160px;
+      border-radius: 12px;
+    }
+    .card-visual-gradient.v1 {
+      background: linear-gradient(135deg, #2d2b3a, #5b4a6e, #a08564);
+    }
+    .card-visual-gradient.v2 {
+      background: linear-gradient(135deg, #3a4a3a, #6b7c5e, #c4a882);
+    }
+    .card-visual-gradient.v3 {
+      background: linear-gradient(135deg, #4a3a2a, #b85c38, #e8c9a0);
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 8rem 2rem 10rem;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 400; margin-bottom: 1.25rem;
+    }
+    .cta-section > p {
+      font-size: 1rem; color: var(--ink-light);
+      max-width: 440px; margin: 0 auto 2.5rem;
+    }
+    .cta-form {
+      display: flex; gap: 0.75rem;
+      max-width: 400px; margin: 0 auto;
+    }
+    .cta-form input {
+      flex: 1; background: #fff;
+      border: 1px solid rgba(26, 23, 20, 0.12);
+      border-radius: 100px; padding: 14px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; color: var(--ink);
+      outline: none;
+    }
+    .cta-form input:focus { border-color: var(--ink); }
+    .cta-form input::placeholder { color: var(--ink-faint); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(26, 23, 20, 0.08);
+      padding: 3rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+    }
+    .footer-right {
+      font-size: 0.78rem; color: var(--ink-faint);
+    }
+    .footer-links {
+      display: flex; gap: 2rem;
+    }
+    .footer-links a {
+      font-size: 0.78rem; color: var(--ink-faint);
+      text-decoration: none; text-transform: uppercase;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--ink); }
+
+    @media (max-width: 900px) {
+      .bento { grid-template-columns: 1fr; }
+      .bento-card.full-width { grid-column: span 1; grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .bottom-grid { grid-template-columns: 1fr; }
+      .scramble-visual { flex-direction: column; }
+      .arrow-col { transform: rotate(90deg); }
+      nav { padding: 0 1.5rem; }
+      .nav-links a:not(:last-child) { display: none; }
+    }
+    @media (max-width: 600px) {
+      .cta-form { flex-direction: column; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="logo">Reginald</a>
+      <div class="nav-links">
+        <a href="#product">Product</a>
+        <a href="#how">How it works</a>
+        <a href="#about">About</a>
+        <button class="btn-warm">Get early access</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <h1>Your companion<br/>for the age of<br/>surveillance</h1>
+      <p>Every click you make builds a profile someone else owns.
+         Reginald watches your back so you can stop watching yours.</p>
+      <button class="hero-cta">Get early access</button>
+    </div>
+  </section>
+
+  <section class="statement">
+    <p>You agree to terms you never read. Your inbox is full of emails
+       pretending to be people you trust. Companies build detailed profiles
+       of who you are, what you want, and how to sell to you.
+       <strong>Reginald changes that.</strong></p>
+  </section>
+
+  <section class="bento" id="product">
+
+    <!-- TOS Scanner -->
+    <div class="bento-card">
+      <h3>Reads every terms of service so you don't have to</h3>
+      <p>Reginald scans agreements before you sign them and flags the clauses that actually matter.</p>
+      <div class="visual">
+        <div class="tos-visual">
+          <div class="tos-header">Scanning SocialApp terms of service</div>
+          <div class="tos-row">
+            <span class="tos-tag high">Risk</span>
+            <span class="tos-text">Grants perpetual license to all content you upload</span>
+          </div>
+          <div class="tos-row">
+            <span class="tos-tag high">Risk</span>
+            <span class="tos-text">Shares biometric data with unnamed third parties</span>
+          </div>
+          <div class="tos-row">
+            <span class="tos-tag med">Note</span>
+            <span class="tos-text">Retains data for 7 years after account deletion</span>
+          </div>
+          <div class="tos-row">
+            <span class="tos-tag low">Fine</span>
+            <span class="tos-text">Standard session cookies</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email Guardian -->
+    <div class="bento-card">
+      <h3>Catches the emails designed to fool you</h3>
+      <p>Phishing, impersonation, gift card scams. Reginald spots them before you click.</p>
+      <div class="visual">
+        <div class="email-visual">
+          <div class="email-mock">
+            <div class="email-top">
+              <div class="email-sender-info">
+                <div class="email-av">JD</div>
+                <div>
+                  <div class="email-name">James Davidson (CEO)</div>
+                  <div class="email-domain">j.davidson@company-hr.support.com</div>
+                </div>
+              </div>
+              <span class="flagged">Flagged</span>
+            </div>
+            <div class="email-body-mock">
+              <div class="email-subject">Urgent &mdash; Need your help</div>
+              <div class="email-text">Hey, are you at your desk? I need you to grab some gift cards for a client meeting. Get 5x $200 and send me the codes. I'll reimburse you.</div>
+            </div>
+            <div class="reginald-note">
+              <div class="reginald-note-title">Reginald</div>
+              <ul>
+                <li>Domain doesn't match your organization</li>
+                <li>Pattern matches CEO impersonation scam</li>
+                <li>"Don't tell anyone" is an isolation tactic</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Shield -->
+    <div class="bento-card full-width">
+      <div>
+        <h3>AI browsers see everything. Reginald decides what they get.</h3>
+        <p>Tools like Operator, Comet, and Claude browse the web on your behalf. They read your emails, fill out your forms, access your accounts. Reginald sits between you and them, filtering what data these agents can see, blocking prompt injection attacks that try to hijack their actions, and making sure no AI agent oversteps without your say.</p>
+      </div>
+      <div class="visual">
+        <div class="shield-visual">
+          <div class="shield-flow">
+            <span class="flow-node you-node">Your data</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-node reg-node">Reginald</span>
+            <span class="flow-arrow">&rarr;</span>
+            <span class="flow-node web-node">AI agent</span>
+          </div>
+          <div class="browser-threat">
+            <div class="browser-threat-header">Active AI browser sessions</div>
+            <div class="browser-row">
+              <span class="browser-name">Operator (OpenAI)</span>
+              <span class="browser-status shielded">Shielded</span>
+            </div>
+            <div class="browser-row">
+              <span class="browser-name">Claude Computer Use</span>
+              <span class="browser-status shielded">Shielded</span>
+            </div>
+            <div class="browser-row">
+              <span class="browser-name">Comet (Apple)</span>
+              <span class="browser-status shielded">Shielded</span>
+            </div>
+            <div class="browser-row">
+              <span class="browser-name">Unknown agent</span>
+              <span class="browser-status blocked">Blocked</span>
+            </div>
+          </div>
+          <div class="injection-alert">
+            <div class="injection-alert-title">Prompt injection blocked</div>
+            <p>A hidden instruction on checkout.store.com attempted to redirect Operator to share your payment details with an external endpoint. Reginald intercepted and neutralized it.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Scrambler -->
+    <div class="bento-card">
+      <h3>Makes their profiles of you useless</h3>
+      <p>Reginald generates noise that confuses tracking systems, scrambling the detailed picture companies build of you.</p>
+      <div class="visual">
+        <div class="scramble-visual">
+          <div class="profile-col before">
+            <h5>What they know</h5>
+            <div class="profile-field"><span class="k">Age</span><span class="v">32</span></div>
+            <div class="profile-field"><span class="k">Income</span><span class="v">$85k</span></div>
+            <div class="profile-field"><span class="k">Interests</span><span class="v">Hiking, Crypto</span></div>
+            <div class="profile-field"><span class="k">Politics</span><span class="v">Moderate</span></div>
+          </div>
+          <div class="arrow-col">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14m-4-4 4 4-4 4"/></svg>
+          </div>
+          <div class="profile-col after">
+            <h5>What they see now</h5>
+            <div class="profile-field"><span class="k">Age</span><span class="v scrambled">19? 47?</span></div>
+            <div class="profile-field"><span class="k">Income</span><span class="v scrambled">??k</span></div>
+            <div class="profile-field"><span class="k">Interests</span><span class="v scrambled">Knitting? Cars?</span></div>
+            <div class="profile-field"><span class="k">Politics</span><span class="v scrambled">???</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <section class="stats-section" id="how">
+    <div class="stats-header">
+      <p>The scale of the problem is hard to overstate</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="num">3.2B</div>
+        <div class="desc">data points collected per person, per year</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">92%</div>
+        <div class="desc">of terms of service contain hidden data-sharing clauses</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">340%</div>
+        <div class="desc">year-over-year increase in CEO impersonation scams</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">150+</div>
+        <div class="desc">terms of service the average person agrees to per year, unread</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-grid" id="about">
+    <div class="bottom-card">
+      <h3>Always on, never in the way</h3>
+      <p>Reginald works in the background. No dashboards to check, no settings to tune. It just handles things.</p>
+      <div class="card-visual">
+        <div class="card-visual-gradient v1"></div>
+      </div>
+    </div>
+    <div class="bottom-card">
+      <h3>Your data stays yours</h3>
+      <p>Nothing leaves your device without your say. Reginald is built to protect your privacy, not collect from it.</p>
+      <div class="card-visual">
+        <div class="card-visual-gradient v2"></div>
+      </div>
+    </div>
+    <div class="bottom-card">
+      <h3>Gets smarter over time</h3>
+      <p>The more Reginald sees, the better it gets at spotting what doesn't belong. Adapts to your habits, not the other way around.</p>
+      <div class="card-visual">
+        <div class="card-visual-gradient v3"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Take back your digital life</h2>
+    <p>Join the waitlist. Be among the first to have Reginald watching your back.</p>
+    <div class="cta-form">
+      <input type="email" placeholder="you@email.com" />
+      <button class="btn-warm">Join waitlist</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <span class="footer-logo">Reginald</span>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
