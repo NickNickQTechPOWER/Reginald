@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 320px;
+      background: #0a0a0f;
+      color: #f9fafb;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 13px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid #1f2937;
+    }
+    .header-logo { font-size: 20px; }
+    .header-title { font-weight: 700; font-size: 15px; color: #f9fafb; }
+    .header-sub { font-size: 11px; color: #6b7280; margin-top: 1px; }
+    .header-settings {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: #6b7280;
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .header-settings:hover { background: #1f2937; color: #9ca3af; }
+
+    /* Toggles */
+    .toggles {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-bottom: 1px solid #1f2937;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .toggle-label { color: #d1d5db; font-size: 13px; }
+    .toggle-sub { font-size: 11px; color: #6b7280; margin-top: 1px; }
+
+    .switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+    .switch input { display: none; }
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 10px;
+      background: #374151;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .switch input:checked + .switch-track { background: #3b82f6; }
+    .switch-thumb {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .2s;
+      pointer-events: none;
+    }
+    .switch input:checked ~ .switch-thumb { transform: translateX(16px); }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: #1f2937;
+      border-bottom: 1px solid #1f2937;
+    }
+    .stat {
+      background: #0a0a0f;
+      padding: 10px 14px;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: #f9fafb;
+      line-height: 1;
+    }
+    .stat-value.red { color: #ef4444; }
+    .stat-label { font-size: 11px; color: #6b7280; margin-top: 3px; text-transform: uppercase; letter-spacing: .4px; }
+
+    /* Alert feed */
+    .feed-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px 6px;
+    }
+    .feed-title { font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; }
+    .feed-clear { background: none; border: none; color: #4b5563; font-size: 11px; cursor: pointer; }
+    .feed-clear:hover { color: #9ca3af; }
+
+    .feed { max-height: 220px; overflow-y: auto; }
+    .feed::-webkit-scrollbar { width: 4px; }
+    .feed::-webkit-scrollbar-thumb { background: #374151; border-radius: 2px; }
+
+    .alert-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 16px;
+      border-bottom: 1px solid #111827;
+    }
+    .alert-item:last-child { border-bottom: none; }
+    .alert-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+    .alert-dot.injection { background: #ef4444; }
+    .alert-dot.tos       { background: #f59e0b; }
+    .alert-host { font-size: 12px; color: #d1d5db; font-weight: 500; }
+    .alert-type { font-size: 11px; color: #6b7280; margin-top: 1px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 28px 16px;
+      color: #4b5563;
+    }
+    .empty-icon { font-size: 28px; margin-bottom: 8px; }
+    .empty-text { font-size: 12px; }
+
+    /* No API key warning */
+    .api-warning {
+      margin: 10px 16px;
+      padding: 10px 12px;
+      background: #1c1407;
+      border: 1px solid #78350f;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #fbbf24;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .api-warning a { color: #f59e0b; text-decoration: underline; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <span class="header-logo">🛡️</span>
+    <div>
+      <div class="header-title">Reginald</div>
+      <div class="header-sub">Data Shield &amp; ToS Scanner</div>
+    </div>
+    <button class="header-settings" id="btn-settings" title="Settings">⚙️</button>
+  </div>
+
+  <!-- API key warning (shown if no key) -->
+  <div class="api-warning" id="api-warning" style="display:none;">
+    ⚠️ No API key set. <a id="link-settings">Add one in Settings</a> to enable AI analysis.
+  </div>
+
+  <!-- Feature toggles -->
+  <div class="toggles">
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Data Shield</div>
+        <div class="toggle-sub">Block prompt injection attacks</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle-shield" checked />
+        <span class="switch-track"></span>
+        <span class="switch-thumb"></span>
+      </label>
+    </div>
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">ToS Scanner</div>
+        <div class="toggle-sub">Review terms before you accept</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="toggle-tos" checked />
+        <span class="switch-track"></span>
+        <span class="switch-thumb"></span>
+      </label>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value red" id="stat-injections">0</div>
+      <div class="stat-label">Injections Blocked</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="stat-tos">0</div>
+      <div class="stat-label">ToS Reviewed</div>
+    </div>
+  </div>
+
+  <!-- Alert feed -->
+  <div class="feed-header">
+    <span class="feed-title">Recent Activity</span>
+    <button class="feed-clear" id="btn-clear">Clear all</button>
+  </div>
+
+  <div class="feed" id="feed"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

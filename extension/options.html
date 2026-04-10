@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reginald — Settings</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0f;
+      color: #f9fafb;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+    }
+
+    .page {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    /* Header */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .page-header-logo { font-size: 28px; }
+    .page-header-title { font-size: 20px; font-weight: 700; }
+    .page-header-sub { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+    /* Sections */
+    section { margin-bottom: 32px; }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      color: #6b7280;
+      margin-bottom: 12px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .card-row {
+      padding: 16px 18px;
+      border-bottom: 1px solid #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .card-row:last-child { border-bottom: none; }
+    .card-row-label { flex: 1; }
+    .card-row-label strong { display: block; color: #f9fafb; font-size: 14px; font-weight: 500; }
+    .card-row-label span { display: block; color: #6b7280; font-size: 12px; margin-top: 2px; }
+
+    /* Inputs */
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #f9fafb;
+      font-size: 13px;
+      padding: 9px 12px;
+      outline: none;
+      font-family: monospace;
+    }
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      border-color: #3b82f6;
+    }
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .btn-show {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #9ca3af;
+      font-size: 12px;
+      padding: 0 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-show:hover { color: #f9fafb; }
+
+    /* Toggle */
+    .switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+    .switch input { display: none; }
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      border-radius: 11px;
+      background: #374151;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .switch input:checked + .switch-track { background: #3b82f6; }
+    .switch-thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform .2s;
+      pointer-events: none;
+    }
+    .switch input:checked ~ .switch-thumb { transform: translateX(18px); }
+
+    /* Save button */
+    .save-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-save {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-save:hover { background: #2563eb; }
+    .btn-save:disabled { opacity: .5; cursor: not-allowed; }
+    .save-feedback { font-size: 13px; color: #22c55e; display: none; }
+
+    /* Rules table */
+    .rules-list { padding: 0; }
+    .rule-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-bottom: 1px solid #1f2937;
+    }
+    .rule-row:last-child { border-bottom: none; }
+    .rule-cat {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .rule-cat.Injection    { background: #450a0a; color: #f87171; }
+    .rule-cat.PII          { background: #2e1065; color: #c4b5fd; }
+    .rule-cat.Exfiltration { background: #431407; color: #fb923c; }
+    .rule-cat.Custom       { background: #1f2937; color: #9ca3af; }
+    .rule-pattern { font-family: monospace; font-size: 12px; color: #9ca3af; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .rule-del {
+      background: none;
+      border: none;
+      color: #4b5563;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0 4px;
+      flex-shrink: 0;
+    }
+    .rule-del:hover { color: #ef4444; }
+
+    .add-rule-row {
+      display: flex;
+      gap: 8px;
+      padding: 12px 18px;
+      border-top: 1px solid #1f2937;
+      background: #0d1117;
+    }
+    .add-rule-cat {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #f9fafb;
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+    .add-rule-input {
+      flex: 1;
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #f9fafb;
+      font-size: 12px;
+      font-family: monospace;
+      padding: 6px 10px;
+      outline: none;
+    }
+    .add-rule-input:focus { border-color: #3b82f6; }
+    .btn-add-rule {
+      background: #1f2937;
+      border: 1px solid #374151;
+      border-radius: 8px;
+      color: #9ca3af;
+      font-size: 12px;
+      padding: 0 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-add-rule:hover { background: #374151; color: #f9fafb; }
+
+    /* Footer */
+    .footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid #1f2937;
+      font-size: 12px;
+      color: #4b5563;
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <span class="page-header-logo">🛡️</span>
+    <div>
+      <div class="page-header-title">Reginald Settings</div>
+      <div class="page-header-sub">Data Shield &amp; ToS Scanner configuration</div>
+    </div>
+  </div>
+
+  <!-- Account -->
+  <section>
+    <div class="section-title">Reginald Account</div>
+    <div class="card">
+      <div class="card-row" style="flex-direction:column; align-items:stretch; gap:12px;">
+        <div id="account-logged-in" style="display:none;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div class="card-row-label">
+              <strong id="account-email">—</strong>
+              <span>Connected · activity syncs to your dashboard</span>
+            </div>
+            <button class="btn-show" id="btn-logout" style="color:#ef4444;">Sign out</button>
+          </div>
+        </div>
+        <div id="account-logged-out">
+          <div class="card-row-label" style="margin-bottom:10px;">
+            <strong>Sign in to sync activity</strong>
+            <span>Connect your reginald.ai account to see events in your dashboard</span>
+          </div>
+          <div style="display:flex; gap:8px; margin-bottom:8px;">
+            <input type="text" id="login-email" placeholder="you@example.com" style="font-family:inherit;" />
+          </div>
+          <div style="display:flex; gap:8px;">
+            <input type="password" id="login-password" placeholder="Password" style="font-family:inherit;" />
+            <button class="btn-show" id="btn-login">Sign in</button>
+          </div>
+          <div id="login-error" style="font-size:12px; color:#f87171; margin-top:6px; display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Claude API -->
+  <section>
+    <div class="section-title">Claude AI</div>
+    <div class="card">
+      <div class="card-row" style="flex-direction:column; align-items:stretch;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div class="card-row-label">
+            <strong>API Key</strong>
+            <span>Required for ToS analysis. Get one at console.anthropic.com</span>
+          </div>
+        </div>
+        <div class="input-row">
+          <input type="password" id="api-key" placeholder="sk-ant-…" autocomplete="off" />
+          <button class="btn-show" id="btn-show-key">Show</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature toggles -->
+  <section>
+    <div class="section-title">Features</div>
+    <div class="card">
+      <div class="card-row">
+        <div class="card-row-label">
+          <strong>Data Shield</strong>
+          <span>Scan every page for prompt injection attacks targeting AI agents</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-shield" checked />
+          <span class="switch-track"></span>
+          <span class="switch-thumb"></span>
+        </label>
+      </div>
+      <div class="card-row">
+        <div class="card-row-label">
+          <strong>ToS Scanner</strong>
+          <span>Intercept "I Agree" clicks and review terms with Claude before you accept</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="toggle-tos" checked />
+          <span class="switch-track"></span>
+          <span class="switch-thumb"></span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <!-- Custom rules -->
+  <section>
+    <div class="section-title">Custom Injection Rules</div>
+    <div class="card">
+      <div class="rules-list" id="rules-list"></div>
+      <div class="add-rule-row">
+        <select class="add-rule-cat" id="new-rule-cat">
+          <option value="Injection">Injection</option>
+          <option value="PII">PII</option>
+          <option value="Exfiltration">Exfiltration</option>
+          <option value="Custom">Custom</option>
+        </select>
+        <input class="add-rule-input" type="text" id="new-rule-pattern" placeholder="regex pattern…" />
+        <button class="btn-add-rule" id="btn-add-rule">Add</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Save -->
+  <div class="save-bar">
+    <button class="btn-save" id="btn-save">Save Settings</button>
+    <span class="save-feedback" id="save-feedback">✓ Saved</span>
+  </div>
+
+  <div class="footer">
+    <span>Reginald v0.1.0</span>
+    <span>All data stays local · No telemetry</span>
+  </div>
+
+</div>
+<script src="options.js"></script>
+</body>
+</html>
