@@ -18,10 +18,10 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
   }
 
-  updateUserSettings(userId, fields as Parameters<typeof updateUserSettings>[1]);
-  const user = getUserById(userId)!;
+  await updateUserSettings(userId, fields as Parameters<typeof updateUserSettings>[1]);
+  const user = await getUserById(userId);
 
   return NextResponse.json({
-    user: { id: user.id, email: user.email, name: user.name, api_key: user.api_key, shield_on: user.shield_on, tos_on: user.tos_on },
+    user: { id: user!.id, email: user!.email, name: user!.name, api_key: user!.api_key, shield_on: user!.shield_on, tos_on: user!.tos_on },
   });
 }

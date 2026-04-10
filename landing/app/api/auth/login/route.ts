@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Email and password required' }, { status: 400 });
     }
 
-    const user = getUserByEmail(email.toLowerCase());
+    const user = await getUserByEmail(email.toLowerCase());
     if (!user) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }

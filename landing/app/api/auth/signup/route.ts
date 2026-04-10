@@ -15,13 +15,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 });
     }
 
-    const existing = getUserByEmail(email.toLowerCase());
+    const existing = await getUserByEmail(email.toLowerCase());
     if (existing) {
       return NextResponse.json({ error: 'An account with this email already exists' }, { status: 409 });
     }
 
     const hashed = await hash(password, 12);
-    const user   = createUser(randomUUID(), email.toLowerCase(), hashed, name || '');
+    const user   = await createUser(randomUUID(), email.toLowerCase(), hashed, name || '');
     const token  = await signToken(user.id);
 
     const res = NextResponse.json({ user: { id: user.id, email: user.email, name: user.name } });
