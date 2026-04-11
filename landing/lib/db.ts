@@ -1,4 +1,6 @@
-import { sql } from '@vercel/postgres';
+import { neon } from '@neondatabase/serverless';
+
+const sql = neon(process.env.DATABASE_URL!);
 
 // ── Schema migration (runs once on first request) ─────────────────────────────
 
@@ -59,7 +61,7 @@ export interface Event {
 
 export async function getUserById(id: string): Promise<User | null> {
   await migrate();
-  const { rows } = await sql`
+  const rows = await sql`
     SELECT id, email, name, api_key, shield_on, tos_on, created_at
     FROM users WHERE id = ${id}
   `;
@@ -68,7 +70,7 @@ export async function getUserById(id: string): Promise<User | null> {
 
 export async function getUserByEmail(email: string): Promise<(User & { password: string }) | null> {
   await migrate();
-  const { rows } = await sql`SELECT * FROM users WHERE email = ${email}`;
+  const rows = await sql`SELECT * FROM users WHERE email = ${email}`;
   return (rows[0] as (User & { password: string })) ?? null;
 }
 
@@ -83,11 +85,10 @@ export async function updateUserSettings(
   fields: Partial<Pick<User, 'name' | 'api_key' | 'shield_on' | 'tos_on'>>
 ) {
   await migrate();
-  // Build update dynamically — only set provided fields
-  if (fields.name      !== undefined) await sql`UPDATE users SET name      = ${fields.name}                    WHERE id = ${id}`;
-  if (fields.api_key   !== undefined) await sql`UPDATE users SET api_key   = ${fields.api_key}                 WHERE id = ${id}`;
-  if (fields.shield_on !== undefined) await sql`UPDATE users SET shield_on = ${fields.shield_on}               WHERE id = ${id}`;
-  if (fields.tos_on    !== undefined) await sql`UPDATE users SET tos_on    = ${fields.tos_on}                  WHERE id = ${id}`;
+  if (fields.name      !== undefined) await sql`UPDATE users SET name      = ${fields.name}      WHERE id = ${id}`;
+  if (fields.api_key   !== undefined) await sql`UPDATE users SET api_key   = ${fields.api_key}   WHERE id = ${id}`;
+  if (fields.shield_on !== undefined) await sql`UPDATE users SET shield_on = ${fields.shield_on} WHERE id = ${id}`;
+  if (fields.tos_on    !== undefined) await sql`UPDATE users SET tos_on    = ${fields.tos_on}    WHERE id = ${id}`;
 }
 
 // ── Event helpers ─────────────────────────────────────────────────────────────
@@ -105,7 +106,7 @@ export async function insertEvent(
 
 export async function getEvents(userId: string, limit = 100): Promise<Event[]> {
   await migrate();
-  const { rows } = await sql`
+  const rows = await sql`
     SELECT * FROM events WHERE user_id = ${userId}
     ORDER BY timestamp DESC LIMIT ${limit}
   `;
@@ -114,9 +115,9 @@ export async function getEvents(userId: string, limit = 100): Promise<Event[]> {
 
 export async function getEventStats(userId: string) {
   await migrate();
-  const { rows } = await sql`
+  const rows = await sql`
     SELECT
-      COUNT(*)                              AS total,
+      COUNT(*)                                          AS total,
       SUM(CASE WHEN kind='injection' THEN 1 ELSE 0 END) AS injections,
       SUM(CASE WHEN kind='tos'       THEN 1 ELSE 0 END) AS tos_reviews
     FROM events WHERE user_id = ${userId}
