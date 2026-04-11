@@ -581,8 +581,7 @@ export default function Home() {
           <span className="footer-logo">Reginald</span>
           <div className="footer-links">
             <a href="#">Privacy</a>
-            <Link href="/login">Sign in</Link>
-            <a href="mailto:hello@getreginald.com">Contact</a>
+            <a href="mailto:hello@usereginald.com">Contact</a>
           </div>
         </div>
       </footer>

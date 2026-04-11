@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "Reginald — Your companion for the age of surveillance",
   description:
     "Every click you make builds a profile someone else owns. Reginald watches your back so you can stop watching yours.",
+  icons: {
+    icon: '/favicon.png',
+    apple: '/favicon.png',
+  },
 };
 
 export default function RootLayout({
