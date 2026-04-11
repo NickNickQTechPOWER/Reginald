@@ -21,32 +21,54 @@ function EarlyAccessModal({ onClose }: { onClose: () => void }) {
     }
   }
 
+  const serif = "'DM Serif Display', serif";
+  const sans  = "'DM Sans', sans-serif";
+
   return (
     <div style={{ position:'fixed', inset:0, zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }}>
-      <div onClick={onClose} style={{ position:'absolute', inset:0, background:'rgba(37,20,0,0.4)', backdropFilter:'blur(4px)' }} />
-      <div style={{ position:'relative', background:'#f5f2e3', borderRadius:16, padding:'2.5rem', width:'100%', maxWidth:420, boxShadow:'0 24px 80px rgba(37,20,0,0.18)' }}>
-        <button onClick={onClose} style={{ position:'absolute', top:'1rem', right:'1.25rem', background:'none', border:'none', cursor:'pointer', fontSize:'1.25rem', color:'#8d8372' }}>✕</button>
+      <div onClick={onClose} style={{ position:'absolute', inset:0, background:'rgba(37,20,0,0.55)', backdropFilter:'blur(6px)' }} />
+      <div style={{ position:'relative', background:'#f5f2e3', borderRadius:20, padding:'3rem 2.5rem 2.5rem', width:'100%', maxWidth:400, boxShadow:'0 32px 100px rgba(37,20,0,0.25)' }}>
+        <button onClick={onClose} style={{ position:'absolute', top:'1.1rem', right:'1.25rem', background:'none', border:'none', cursor:'pointer', fontSize:'1rem', color:'#c4a882', letterSpacing:'0.05em', fontFamily:sans }}>✕</button>
+
         {state === 'done' ? (
-          <div style={{ textAlign:'center', padding:'1rem 0' }}>
-            <div style={{ fontFamily:"'DM Serif Display', serif", fontSize:'1.6rem', marginBottom:'0.75rem', color:'#251400' }}>You&rsquo;re on the list.</div>
-            <div style={{ color:'#8d8372', fontSize:'0.95rem', lineHeight:1.5 }}>We&rsquo;ll let you know when Reginald is ready. Keep your back watched.</div>
-            <button onClick={onClose} style={{ marginTop:'1.5rem', background:'#000', color:'#f5f2e3', border:'none', borderRadius:100, padding:'0.75rem 1.75rem', fontFamily:"'DM Sans', sans-serif", fontSize:'0.9rem', textTransform:'uppercase', cursor:'pointer' }}>Done</button>
+          <div style={{ textAlign:'center', padding:'0.5rem 0 1rem' }}>
+            <div style={{ fontSize:'2rem', marginBottom:'1rem' }}>✦</div>
+            <div style={{ fontFamily:serif, fontSize:'1.75rem', marginBottom:'0.75rem', color:'#251400', lineHeight:1.15 }}>You&rsquo;re inside.</div>
+            <div style={{ color:'#8d8372', fontSize:'0.9rem', lineHeight:1.6, maxWidth:280, margin:'0 auto' }}>
+              We&rsquo;ll reach out personally when your spot opens. Keep your back watched.
+            </div>
+            <button onClick={onClose} style={{ marginTop:'2rem', background:'#251400', color:'#f5f2e3', border:'none', borderRadius:100, padding:'0.8rem 2rem', fontFamily:sans, fontSize:'0.85rem', textTransform:'uppercase', letterSpacing:'0.06em', cursor:'pointer' }}>Close</button>
           </div>
         ) : (
           <>
-            <div style={{ fontFamily:"'DM Serif Display', serif", fontSize:'1.6rem', marginBottom:'0.4rem', color:'#251400' }}>Get early access</div>
-            <div style={{ color:'#8d8372', fontSize:'0.9rem', marginBottom:'1.75rem', lineHeight:1.5 }}>We&rsquo;re rolling out to a small group first. Leave your email and we&rsquo;ll reach out.</div>
+            {/* Badge */}
+            <div style={{ display:'inline-flex', alignItems:'center', gap:'0.4rem', background:'rgba(37,20,0,0.06)', borderRadius:100, padding:'0.3rem 0.75rem', marginBottom:'1.5rem' }}>
+              <span style={{ width:6, height:6, borderRadius:'50%', background:'#6b7c5e', display:'inline-block' }} />
+              <span style={{ fontFamily:sans, fontSize:'0.7rem', fontWeight:500, textTransform:'uppercase', letterSpacing:'0.1em', color:'#6b7c5e' }}>Private beta</span>
+            </div>
+
+            <div style={{ fontFamily:serif, fontSize:'2rem', marginBottom:'0.6rem', color:'#251400', lineHeight:1.1 }}>
+              This isn&rsquo;t for everyone.
+            </div>
+            <div style={{ color:'#8d8372', fontSize:'0.88rem', marginBottom:'2rem', lineHeight:1.65 }}>
+              Reginald is rolling out to a small, hand-picked group. We&rsquo;re not doing a public launch. Leave your email — we&rsquo;ll decide if it&rsquo;s a fit.
+            </div>
+
             <form onSubmit={submit}>
               <input
                 type="email" required value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                style={{ width:'100%', background:'#fff', border:'1px solid rgba(37,20,0,0.15)', borderRadius:8, padding:'0.75rem 1rem', fontFamily:"'DM Sans', sans-serif", fontSize:'0.95rem', color:'#251400', outline:'none', boxSizing:'border-box', marginBottom:'0.75rem' }}
+                placeholder="your@email.com"
+                style={{ width:'100%', background:'#fff', border:'1px solid rgba(37,20,0,0.12)', borderRadius:10, padding:'0.85rem 1rem', fontFamily:sans, fontSize:'0.95rem', color:'#251400', outline:'none', boxSizing:'border-box', marginBottom:'0.75rem' }}
               />
-              {state === 'error' && <div style={{ color:'#b85c38', fontSize:'0.82rem', marginBottom:'0.5rem' }}>Something went wrong. Try again.</div>}
-              <button type="submit" disabled={state === 'loading'} style={{ width:'100%', background:'#000', color:'#f5f2e3', border:'none', borderRadius:100, padding:'0.9rem', fontFamily:"'DM Sans', sans-serif", fontSize:'0.95rem', textTransform:'uppercase', cursor:'pointer', opacity: state === 'loading' ? 0.5 : 1 }}>
-                {state === 'loading' ? 'Saving…' : 'Request access'}
+              {state === 'error' && <div style={{ color:'#b85c38', fontSize:'0.8rem', marginBottom:'0.5rem' }}>Something went wrong. Try again.</div>}
+              <button type="submit" disabled={state === 'loading'} style={{ width:'100%', background:'#251400', color:'#f5f2e3', border:'none', borderRadius:100, padding:'1rem', fontFamily:sans, fontSize:'0.88rem', textTransform:'uppercase', letterSpacing:'0.06em', cursor:'pointer', opacity: state === 'loading' ? 0.5 : 1 }}>
+                {state === 'loading' ? 'Submitting…' : 'Apply for access'}
               </button>
             </form>
+
+            <div style={{ marginTop:'1.25rem', textAlign:'center', fontFamily:sans, fontSize:'0.75rem', color:'#c4a882' }}>
+              No spam. No newsletter. Just a message when your spot is ready.
+            </div>
           </>
         )}
       </div>
