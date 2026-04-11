@@ -1,6 +1,62 @@
+'use client';
 import Link from 'next/link';
+import { useState } from 'react';
+
+function EarlyAccessModal({ onClose }: { onClose: () => void }) {
+  const [email, setEmail] = useState('');
+  const [state, setState] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+
+  async function submit(e: React.SyntheticEvent) {
+    e.preventDefault();
+    setState('loading');
+    try {
+      const res = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      setState(res.ok ? 'done' : 'error');
+    } catch {
+      setState('error');
+    }
+  }
+
+  return (
+    <div style={{ position:'fixed', inset:0, zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }}>
+      <div onClick={onClose} style={{ position:'absolute', inset:0, background:'rgba(37,20,0,0.4)', backdropFilter:'blur(4px)' }} />
+      <div style={{ position:'relative', background:'#f5f2e3', borderRadius:16, padding:'2.5rem', width:'100%', maxWidth:420, boxShadow:'0 24px 80px rgba(37,20,0,0.18)' }}>
+        <button onClick={onClose} style={{ position:'absolute', top:'1rem', right:'1.25rem', background:'none', border:'none', cursor:'pointer', fontSize:'1.25rem', color:'#8d8372' }}>✕</button>
+        {state === 'done' ? (
+          <div style={{ textAlign:'center', padding:'1rem 0' }}>
+            <div style={{ fontFamily:"'DM Serif Display', serif", fontSize:'1.6rem', marginBottom:'0.75rem', color:'#251400' }}>You&rsquo;re on the list.</div>
+            <div style={{ color:'#8d8372', fontSize:'0.95rem', lineHeight:1.5 }}>We&rsquo;ll let you know when Reginald is ready. Keep your back watched.</div>
+            <button onClick={onClose} style={{ marginTop:'1.5rem', background:'#000', color:'#f5f2e3', border:'none', borderRadius:100, padding:'0.75rem 1.75rem', fontFamily:"'DM Sans', sans-serif", fontSize:'0.9rem', textTransform:'uppercase', cursor:'pointer' }}>Done</button>
+          </div>
+        ) : (
+          <>
+            <div style={{ fontFamily:"'DM Serif Display', serif", fontSize:'1.6rem', marginBottom:'0.4rem', color:'#251400' }}>Get early access</div>
+            <div style={{ color:'#8d8372', fontSize:'0.9rem', marginBottom:'1.75rem', lineHeight:1.5 }}>We&rsquo;re rolling out to a small group first. Leave your email and we&rsquo;ll reach out.</div>
+            <form onSubmit={submit}>
+              <input
+                type="email" required value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                style={{ width:'100%', background:'#fff', border:'1px solid rgba(37,20,0,0.15)', borderRadius:8, padding:'0.75rem 1rem', fontFamily:"'DM Sans', sans-serif", fontSize:'0.95rem', color:'#251400', outline:'none', boxSizing:'border-box', marginBottom:'0.75rem' }}
+              />
+              {state === 'error' && <div style={{ color:'#b85c38', fontSize:'0.82rem', marginBottom:'0.5rem' }}>Something went wrong. Try again.</div>}
+              <button type="submit" disabled={state === 'loading'} style={{ width:'100%', background:'#000', color:'#f5f2e3', border:'none', borderRadius:100, padding:'0.9rem', fontFamily:"'DM Sans', sans-serif", fontSize:'0.95rem', textTransform:'uppercase', cursor:'pointer', opacity: state === 'loading' ? 0.5 : 1 }}>
+                {state === 'loading' ? 'Saving…' : 'Request access'}
+              </button>
+            </form>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
+  const [showModal, setShowModal] = useState(false);
+  const openModal = () => setShowModal(true);
   return (
     <>
       <style>{`
@@ -279,14 +335,16 @@ export default function Home() {
         }
       `}</style>
 
+      {showModal && <EarlyAccessModal onClose={() => setShowModal(false)} />}
+
       <nav>
         <div className="nav-inner">
-          <Link href="/" className="logo">Reginald</Link>
+          <Link href="/" className="logo" style={{ color: 'var(--ink)' }}>Reginald</Link>
           <div className="nav-links">
             <a href="#product">Product</a>
             <a href="#how">How it works</a>
             <a href="#about">About</a>
-            <Link href="/signup" className="btn-warm">Get early access</Link>
+            <button onClick={openModal} className="btn-warm">Get early access</button>
           </div>
         </div>
       </nav>
@@ -296,7 +354,7 @@ export default function Home() {
         <div className="hero-content">
           <h1>Your companion<br />for the age of<br />surveillance</h1>
           <p>Every click you make builds a profile someone else owns. Reginald watches your back so you can stop watching yours.</p>
-          <Link href="/signup" className="hero-cta">Get early access</Link>
+          <button onClick={openModal} className="hero-cta">Get early access</button>
         </div>
       </section>
 
@@ -493,7 +551,7 @@ export default function Home() {
       <section className="cta-section">
         <h2>Take back your digital life</h2>
         <p>Create a free account. Install the extension and you&rsquo;re protected.</p>
-        <Link href="/signup" className="btn-warm" style={{ fontSize: '1.1rem', padding: '1.1rem 2rem' }}>Get early access</Link>
+        <button onClick={openModal} className="btn-warm" style={{ fontSize: '1.1rem', padding: '1.1rem 2rem' }}>Get early access</button>
       </section>
 
       <footer>
