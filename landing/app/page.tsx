@@ -44,14 +44,14 @@ function EarlyAccessModal({ onClose }: { onClose: () => void }) {
             {/* Badge */}
             <div style={{ display:'inline-flex', alignItems:'center', gap:'0.4rem', background:'rgba(37,20,0,0.06)', borderRadius:100, padding:'0.3rem 0.75rem', marginBottom:'1.5rem' }}>
               <span style={{ width:6, height:6, borderRadius:'50%', background:'#6b7c5e', display:'inline-block' }} />
-              <span style={{ fontFamily:sans, fontSize:'0.7rem', fontWeight:500, textTransform:'uppercase', letterSpacing:'0.1em', color:'#6b7c5e' }}>Private beta</span>
+              <span style={{ fontFamily:sans, fontSize:'0.7rem', fontWeight:500, textTransform:'uppercase', letterSpacing:'0.1em', color:'#6b7c5e' }}>Founders waitlist</span>
             </div>
 
             <div style={{ fontFamily:serif, fontSize:'2rem', marginBottom:'0.6rem', color:'#251400', lineHeight:1.1 }}>
-              This isn&rsquo;t for everyone.
+              Be among the first.
             </div>
             <div style={{ color:'#8d8372', fontSize:'0.88rem', marginBottom:'2rem', lineHeight:1.65 }}>
-              Reginald is rolling out to a small, hand-picked group. We&rsquo;re not doing a public launch. Leave your email — we&rsquo;ll decide if it&rsquo;s a fit.
+              We&rsquo;re opening up to a small group of founders and early adopters before anyone else. Drop your email and you&rsquo;ll be first to know when your spot opens.
             </div>
 
             <form onSubmit={submit}>
@@ -62,7 +62,7 @@ function EarlyAccessModal({ onClose }: { onClose: () => void }) {
               />
               {state === 'error' && <div style={{ color:'#b85c38', fontSize:'0.8rem', marginBottom:'0.5rem' }}>Something went wrong. Try again.</div>}
               <button type="submit" disabled={state === 'loading'} style={{ width:'100%', background:'#251400', color:'#f5f2e3', border:'none', borderRadius:100, padding:'1rem', fontFamily:sans, fontSize:'0.88rem', textTransform:'uppercase', letterSpacing:'0.06em', cursor:'pointer', opacity: state === 'loading' ? 0.5 : 1 }}>
-                {state === 'loading' ? 'Submitting…' : 'Apply for access'}
+                {state === 'loading' ? 'Saving…' : 'Join the founders waitlist'}
               </button>
             </form>
 
